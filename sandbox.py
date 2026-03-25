@@ -2,23 +2,27 @@ import time
 from qcrypto.kem import Kyber
 from rich import print
 
+def pause():
+    input("\n[bold cyan]Press Enter to continue...[/bold cyan]")
+
 def step(msg):
-	print(f"\n💫 {msg}")
-	time.sleep(0.6)
+    print(f"\n[bold magenta]💫 {msg}[/bold magenta]")
+    time.sleep(0.4)
+    pause()
 
 def show(label, value, max_len=32):
-	display = value.hex()[:max_len] + "..."
-	print(f" {label}: {display}")
+    display = value.hex()[:max_len] + "..."
+    print(f"[yellow]{label}:[/yellow] [dim]{display}[/dim]")
 
 def divider():
-	print("\n" + "="*50)
+    print("\n[blue]" + "="*50 + "[/blue]")
 
 def main():
-	divider()
-	print("Kyber Demo Encryption")
-	divider()
+    divider()
+    print("[bold green]🔐 Kyber Demo Encryption[/bold green]")
+    divider()
 
-	    # Step 1 — Alice keygen
+    # Step 1 — Alice keygen
     step("Alice generates her keypair")
     alice_kem = Kyber("Kyber768")
     alice_pub, alice_priv = alice_kem.keygen()
@@ -42,9 +46,9 @@ def main():
     # Step 5 — Compare
     step("Comparing shared secrets...")
     if alice_secret == bob_secret:
-        print("✅ SUCCESS: Both secrets match!")
+        print("[bold green]✅ SUCCESS: Both secrets match![/bold green]")
     else:
-        print("❌ ERROR: Secrets do NOT match!")
+        print("[bold red]❌ ERROR: Secrets do NOT match![/bold red]")
 
     # Step 6 — Simulated message encryption
     step("Using shared secret to 'encrypt' a message (demo XOR)")
@@ -53,14 +57,17 @@ def main():
     encrypted = bytes([m ^ bob_secret[i % len(bob_secret)] for i, m in enumerate(message)])
     show("Encrypted Message", encrypted)
 
+    print("\n[cyan]📡 Sending encrypted message over insecure channel...[/cyan]")
+    pause()
+
     # Step 7 — Decrypt
     step("Alice decrypts the message using the same secret")
     decrypted = bytes([c ^ alice_secret[i % len(alice_secret)] for i, c in enumerate(encrypted)])
 
-    print(f"\n📨 Decrypted Message: {decrypted.decode()}")
+    print(f"\n[bold green]📨 Decrypted Message:[/bold green] {decrypted.decode()}")
 
     divider()
-    print("🎉 Demo complete!")
+    print("[bold magenta]🎉 Demo complete![/bold magenta]")
     divider()
 
 if __name__ == "__main__":
